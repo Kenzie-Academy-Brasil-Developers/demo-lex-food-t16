@@ -1,8 +1,12 @@
+import { StyledRecipeCard } from "./style"
+import { StyledButton } from "../../../styles/button"
+
 export const RecipeCard = ({recipe}) => {
   return (
-    <li>
+    <StyledRecipeCard cardStyle={recipe.category}>
         <h3>{recipe.name}</h3>
         <p>{recipe.description}</p>
-    </li>
+        <StyledButton buttonStyle="primary" buttonSize="sm">Favoritar</StyledButton>
+    </StyledRecipeCard>
   )
 }
