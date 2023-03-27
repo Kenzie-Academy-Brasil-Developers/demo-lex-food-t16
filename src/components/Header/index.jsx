@@ -1,7 +1,7 @@
 export const Header = () => {
     return(
         <header>
-            <span>Reitinhas do Alex</span>
+            <span>Receitinhas do Alex</span>
         </header>
     )
 }
