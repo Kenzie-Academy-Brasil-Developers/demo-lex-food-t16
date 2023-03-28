@@ -19,6 +19,11 @@ export const GlobalStyle = createGlobalStyle`
 
     :root{
         --color-example: #FFFFFF; 
+        --box-shadow-1: 0 0 25px 0 rgba(0,0,0,.15);
+    }
+
+    img{
+        max-width: 100%;
     }
 `
 
