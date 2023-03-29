@@ -51,7 +51,7 @@ export const StyledButton = styled.button`
       switch (buttonStyle) {
          case "primary":
             return css`
-               background: blue;
+               background: var(--color-primary);
                color: white;
             `;
          case "secondary":

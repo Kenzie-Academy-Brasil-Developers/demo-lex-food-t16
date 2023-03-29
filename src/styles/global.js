@@ -17,13 +17,22 @@ export const GlobalStyle = createGlobalStyle`
         list-style: none;
     }
 
-    :root{
-        --color-example: #FFFFFF; 
-        --box-shadow-1: 0 0 25px 0 rgba(0,0,0,.15);
-    }
-
     img{
         max-width: 100%;
+    }
+`
+
+export const DarkMode = createGlobalStyle`
+    :root{
+        --color-primary: darkblue;
+        --color-secondary: black;
+    }
+`
+
+export const LightMode = createGlobalStyle`
+    :root{
+        --color-primary: blue;
+        --color-secondary: white;
     }
 `
 

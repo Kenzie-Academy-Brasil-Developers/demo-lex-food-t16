@@ -12,6 +12,7 @@ export const Example = () => {
 
    // onUpdate - efeito de atualização
    useEffect(() => {
+      /* acompanhar a montagem na primeira vez */
       console.log("A atualização aconteceu.");
    }, [count]);
 

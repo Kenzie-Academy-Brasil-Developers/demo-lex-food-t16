@@ -1,51 +1,93 @@
 import { useEffect, useState } from "react";
-import { Example } from "./components/Example";
-import { Header } from "./components/Header"
-import { RecipeList } from "./components/RecipeList"
-import { StyledButton } from "./styles/button"
-import { GlobalStyle } from "./styles/global"
-import './styles/reset.css';
+import { FavoriteList } from "./components/FavoriteList";
+import { Header } from "./components/Header";
+import { RecipeList } from "./components/RecipeList";
+import { api } from "./services/api";
+import { DarkMode, GlobalStyle, LightMode } from "./styles/global";
+import "./styles/reset.css";
 
 function App() {
-  const [isOpen, setOpen] = useState(false);
-  const [recipeList, setRecipeList] = useState([]);
+   //inicialização
+   const favoriteLocalStorage = localStorage.getItem("@FAVORITELIST");
+   //Carregando do localStorage
+   const darkModeLocalStorage = localStorage.getItem("@DARKMODE");
+   const [isOpen, setIsOpen] = useState(false);
+   const [recipeList, setRecipeList] = useState([]);
+   const [favoriteList, setFavoriteList] = useState(
+      favoriteLocalStorage ? JSON.parse(favoriteLocalStorage) : []
+   );
+   const [darkMode, setDarkMode] = useState(
+      darkModeLocalStorage ? darkModeLocalStorage : "FALSE"
+   );
 
-  const loadRecipe = async () => {
-    try {  
-      const response = await fetch('https://recipe-fake-api.onrender.com/recipes');
-      const json = await response.json();
-      setRecipeList(json);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  
-  // loadRecipe() -> CUIDADO - execuções de função diretamente não função componente geram loop infinito;
+   useEffect(() => {
+      //Salvando no localStorage
+      localStorage.setItem("@DARKMODE", darkMode);
+   }, [darkMode]); //Observar o darkMode
 
-  useEffect(() => {
-    console.log('Montagem acontecendo.')
-    loadRecipe();
-  }, []) //Executar a primeira vez, executar uma requisição de GET na montagem
+   // Efeito de atualização
+   useEffect(() => {
+      localStorage.setItem("@FAVORITELIST", JSON.stringify(favoriteList));
+   }, [favoriteList]); //Tem a lista de dependencias com uma ou mais variáveis
 
-  return (
-    <div className="App">
-      <GlobalStyle />
+   const changeColorMode = () => {
+      setDarkMode(darkMode === "FALSE" ? "TRUE" : "FALSE");
+   };
 
-      <button onClick={() => setOpen(!isOpen)}>Modal</button>
-      {isOpen ? <Example /> : null}
-      <Header />
-      <RecipeList recipeList={recipeList} />
-      <StyledButton buttonSize="lg" buttonStyle="primary">
-        Teste
-      </StyledButton>
-      <StyledButton buttonSize="md" buttonStyle="secondary">
-        Teste
-      </StyledButton>
-      <StyledButton buttonSize="sm" buttonStyle="secondary">
-        Teste
-      </StyledButton>
-    </div>
-  )
+   const addRecipeToFavoriteList = (recipe) => {
+      // some verifica se a receita já está contida na lista de favoritos
+      if (!favoriteList.some((favorite) => favorite.id === recipe.id)) {
+         const newFavoriteList = [...favoriteList, recipe];
+         setFavoriteList(newFavoriteList);
+      } else {
+         console.log("Este item já está favoritado.");
+      }
+   };
+
+   const removeRecipeFromFavoriteList = (favoriteId) => {
+      const newFavoriteList = favoriteList.filter(
+         (favorite) => favorite.id !== favoriteId
+      );
+      setFavoriteList(newFavoriteList);
+   };
+
+   const loadRecipe = async () => {
+      try {
+         const response = await api.get("recipes");
+         //console.log(response);
+         setRecipeList(response.data);
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   useEffect(() => {
+      console.log("Montagem acontecendo.");
+      loadRecipe();
+   }, []);
+
+   return (
+      <div className="App">
+         <GlobalStyle />
+         {darkMode === "FALSE" ? <LightMode /> : <DarkMode />}
+         <button onClick={changeColorMode}>Alterar modo de cor</button>
+         <button onClick={() => setIsOpen(!isOpen)}>
+            Favoritos ({favoriteList.length})
+         </button>
+         <Header />
+         <RecipeList
+            addRecipeToFavoriteList={addRecipeToFavoriteList}
+            recipeList={recipeList}
+         />
+         {isOpen ? (
+            <FavoriteList
+               favoriteList={favoriteList}
+               removeRecipeFromFavoriteList={removeRecipeFromFavoriteList}
+               setIsOpen={setIsOpen}
+            />
+         ) : null}
+      </div>
+   );
 }
 
-export default App
+export default App;
