@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { Categories } from "./components/Categories";
 import { FavoriteList } from "./components/FavoriteList";
 import { Header } from "./components/Header";
 import { RecipeList } from "./components/RecipeList";
 import { api } from "./services/api";
 import { DarkMode, GlobalStyle, LightMode } from "./styles/global";
+import 'react-toastify/dist/ReactToastify.css';
 import "./styles/reset.css";
+import { StyledToastContainer } from "./styles/toast";
 
 function App() {
    //inicialização
@@ -19,6 +23,30 @@ function App() {
    const [darkMode, setDarkMode] = useState(
       darkModeLocalStorage ? darkModeLocalStorage : "FALSE"
    );
+   const [filter, setFilter] = useState("");
+
+   //Exemplo de reatividade de estado na lógica
+   const categories = [
+      {
+         label: 'Sushi',
+         slug: 'sushi',
+      },
+      {
+         label: 'Hotdog',
+         slug: 'hotdog'
+      },
+      {
+         label: 'Pizza',
+         slug: 'pizza'
+      }
+   ]
+   //Métodos recomendados para algoritmos de busca mais acertivos
+   //includes (string) || toLowerCase || trim || normalize 
+   // hamb
+   // HAMBURGUER
+   // hamburguer
+   const filterRecipeList = recipeList.filter((recipe) => recipe.category === filter);
+   //console.log(filterRecipeList);
 
    useEffect(() => {
       //Salvando no localStorage
@@ -39,8 +67,13 @@ function App() {
       if (!favoriteList.some((favorite) => favorite.id === recipe.id)) {
          const newFavoriteList = [...favoriteList, recipe];
          setFavoriteList(newFavoriteList);
+         toast.success("Receita favorita com sucesso!", {
+            autoClose: 2000,
+         })
       } else {
-         console.log("Este item já está favoritado.");
+         toast.error("Este item já está favoritado.", {
+            autoClose: 2000,
+         });
       }
    };
 
@@ -49,6 +82,9 @@ function App() {
          (favorite) => favorite.id !== favoriteId
       );
       setFavoriteList(newFavoriteList);
+      toast.success("Receita desfavoritada com sucesso!", {
+         autoClose: 2000,
+      })
    };
 
    const loadRecipe = async () => {
@@ -69,15 +105,20 @@ function App() {
    return (
       <div className="App">
          <GlobalStyle />
+         {/* um ToastContainer somente é necessário */}
+         <StyledToastContainer position="bottom-left" theme="light" />
          {darkMode === "FALSE" ? <LightMode /> : <DarkMode />}
          <button onClick={changeColorMode}>Alterar modo de cor</button>
          <button onClick={() => setIsOpen(!isOpen)}>
             Favoritos ({favoriteList.length})
          </button>
          <Header />
+         <Categories categories={categories} filter={filter} setFilter={setFilter} />
          <RecipeList
             addRecipeToFavoriteList={addRecipeToFavoriteList}
             recipeList={recipeList}
+            filter={filter}
+            filterRecipeList={filterRecipeList}
          />
          {isOpen ? (
             <FavoriteList
