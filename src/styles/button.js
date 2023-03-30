@@ -51,7 +51,7 @@ export const StyledButton = styled.button`
       switch (buttonStyle) {
          case "primary":
             return css`
-               background: blue;
+               background: var(--color-primary);
                color: white;
             `;
          case "secondary":
@@ -59,6 +59,17 @@ export const StyledButton = styled.button`
                background: red;
                color: white;
             `;
+         case "outline-primary":
+            return css`
+               background: transparent;
+               border: 1px solid var(--color-primary);
+               color: var(--color-primary);
+
+               :hover{
+                  background: var(--color-primary);
+                  color: white;
+               }
+            `   
       }
    }}
 `;

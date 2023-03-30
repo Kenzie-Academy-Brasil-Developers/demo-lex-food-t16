@@ -1,25 +1,17 @@
 import { RecipeCard } from "./RecipeCard";
 import { StyledRecipeList } from "./style";
 
-export const RecipeList = () => {
+export const RecipeList = ({ recipeList, addRecipeToFavoriteList, filter, filterRecipeList }) => {
+   const currentRecipeList = filter !== "" ? filterRecipeList : recipeList
+   
    return (
       <>
          <h1>Lista de Receitas</h1>
+
          <StyledRecipeList>
-            <RecipeCard
-               recipe={{
-                  name: "Hamburguer",
-                  description: "Coloca uma carne no meio do pão.",
-                  category: "favorite",
-               }}
-            />
-            <RecipeCard
-               recipe={{
-                  name: "Miojo",
-                  description: "Cozido em três minutos.",
-                  category: "recent",
-               }}
-            />
+            {currentRecipeList.map((recipe) => (
+               <RecipeCard key={recipe.id} recipe={recipe} addRecipeToFavoriteList={addRecipeToFavoriteList} />
+            ))}
          </StyledRecipeList>
       </>
    );

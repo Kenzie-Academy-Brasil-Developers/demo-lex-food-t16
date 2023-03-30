@@ -17,8 +17,22 @@ export const GlobalStyle = createGlobalStyle`
         list-style: none;
     }
 
+    img{
+        max-width: 100%;
+    }
+`
+
+export const DarkMode = createGlobalStyle`
     :root{
-        --color-example: #FFFFFF; 
+        --color-primary: darkblue;
+        --color-secondary: black;
+    }
+`
+
+export const LightMode = createGlobalStyle`
+    :root{
+        --color-primary: blue;
+        --color-secondary: white;
     }
 `
 
